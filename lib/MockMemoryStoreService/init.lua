@@ -27,6 +27,8 @@ end
     Will retrieve a MockMemoryStoreQueue object under the specified name
 ]]
 function MockMemoryStoreService:GetQueue(name: string, timeout: number)
+    warn("MockMemoryStoreService queue is still in development, and may not work accurately just yet.")
+
     local queue = self.queues[name]
     if queue == nil then
         queue = MockMemoryStoreQueue.new(name, timeout)
