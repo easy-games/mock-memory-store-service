@@ -9,12 +9,14 @@
   "publishConfig": {
     "access": "public"
   },
-  "author": "",
-  "license": "ISC",
-  "dependencies": {
+  "author": "easy-games",
+  "license": "MIT",
+  "devDependencies": {
+    "@rbxts/testez": "^0.3.1-ts.7",
     "@rbxts/types": "^1.0.569"
   },
-  "devDependencies": {
-    "@rbxts/testez": "^0.3.1-ts.7"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/easy-games/mock-memory-store-service"
   }
 }
