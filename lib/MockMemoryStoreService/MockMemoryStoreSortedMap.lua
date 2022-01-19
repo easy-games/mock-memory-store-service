@@ -41,9 +41,13 @@ function MockMemoryStoreSortedMap:SetAsync(key, value, expiration)
 end
 
 function MockMemoryStoreSortedMap:UpdateAsync(key, transformFunction, expiration)
+    assert(typeof(key) == "string", "Expects key (argument #1)")
+    assert(typeof(transformFunction) == "function", "Expects transformFunction (argument #2)")
+    assert(typeof(expiration) == "number", "Expects expiration (argument #3)")
+
     local oldValue = self:GetAsync(key)
 
-    local newValue = transformFunction(if oldValue then oldValue.innerValue else nil)
+    local newValue = transformFunction(oldValue)
     if newValue ~= nil then
         self:SetAsync(key, newValue, expiration)
         return newValue

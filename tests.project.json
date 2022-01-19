@@ -1,0 +1,18 @@
+{
+    "name": "mock-tests",
+    "tree": {
+        "$className": "DataModel",
+        "ReplicatedStorage": {
+            "$className": "ReplicatedStorage",
+            "MockMemoryStore": {
+                "$path": "./lib"
+            },
+            "Tests": {
+                "$path": "./tests"
+            },
+            "rbxts": {
+                "$path": "node_modules/@rbxts"
+            }
+        }
+    }
+}
