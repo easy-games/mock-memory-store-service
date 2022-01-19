@@ -3,6 +3,7 @@
   "version": "0.1.0",
   "description": "A wrapper for memory store service to allow testing locally",
   "main": "lib/init.lua",
+  "types": "lib/index.d.ts",
   "scripts": {
     "test": "rojo build tests.project.json --output tests.rbxl && run-in-roblox --place tests.rbxl --script ./scripts/tests.lua"
   },
