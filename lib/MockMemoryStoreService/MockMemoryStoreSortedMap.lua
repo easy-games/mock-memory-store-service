@@ -26,7 +26,7 @@ function MockMemoryStoreSortedMap:UpdateAsync(key, transformFunction, expiration
 
     local newValue = transformFunction(if oldValue then oldValue.value else nil)
     if newValue ~= nil then
-        self:SetAsync(key, newValue, tick() + expiration)
+        self:SetAsync(key, newValue, expiration)
         return newValue
     else
         return nil
