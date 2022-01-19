@@ -1,30 +1,49 @@
+local MockMemoryStoreQuota = require(script.Parent.MockMemoryStoreQuota)
+local MockMemoryStoreUtils = require(script.Parent.MockMemoryStoreUtils)
+
 local MockMemoryStoreSortedMap = {}
 MockMemoryStoreSortedMap.__index = MockMemoryStoreSortedMap;
 
 function MockMemoryStoreSortedMap.new(name)
     return setmetatable({
-        __store = {}
+        mapValues = {},
     }, MockMemoryStoreSortedMap)
 end
 
 function MockMemoryStoreSortedMap:GetAsync(key)
-    return self.__store[key].value
+    MockMemoryStoreUtils.AssertKeyIsValid(key)
+    MockMemoryStoreQuota:ProcessReadRequest()
+
+    local value = self.mapValues[key]
+    if value then
+        return value.innerValue
+    else
+        return nil
+    end
 end
 
 function MockMemoryStoreSortedMap:SetAsync(key, value, expiration)
-    local value = {
-        value = value,
+    MockMemoryStoreUtils.AssertKeyIsValid(key)
+    assert(expiration, "Expiration required")
+
+    assert(expiration <= MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS, "Exceeds max expiration time")
+
+    local mapValue = {
+        innerValue = value,
         expiration = tick() + expiration
     }
 
-    self.__store[key] = value
-    return true
+    MockMemoryStoreQuota:ProcessWriteRequest()
+    local isExistingItem = self.mapValues[key] ~= nil
+    self.mapValues[key] = mapValue
+
+    return isExistingItem
 end
 
 function MockMemoryStoreSortedMap:UpdateAsync(key, transformFunction, expiration)
-    local oldValue = self.__store[key]
+    local oldValue = self:GetAsync(key)
 
-    local newValue = transformFunction(if oldValue then oldValue.value else nil)
+    local newValue = transformFunction(if oldValue then oldValue.innerValue else nil)
     if newValue ~= nil then
         self:SetAsync(key, newValue, expiration)
         return newValue
@@ -34,31 +53,17 @@ function MockMemoryStoreSortedMap:UpdateAsync(key, transformFunction, expiration
 end
 
 function MockMemoryStoreSortedMap:RemoveAsync(key)
-    self.__store[key] = nil
+    MockMemoryStoreQuota:ProcessWriteRequest()
+
+    self.mapValues[key] = nil
 end
 
-local function sortPairsAscending(valueA, valueB)
-    return utf8.codepoint(valueA[1]) < utf8.codepoint(valueB[1])
-end
-
-local function sortPairsDescending(valueA, valueB)
-    return utf8.codepoint(valueA[1]) > utf8.codepoint(valueB[1])
+function MockMemoryStoreSortedMap:RemoveExpiringKey(key)
+    self.mapValues[key] = nil
 end
 
 function MockMemoryStoreSortedMap:GetRangeAsync(direction, count, exclusiveLowerBound, exclusiveUpperBound)
-    assert(direction ~= nil)
-    assert(count ~= nil)
-    
-    local keyPairs = {}
-    for key, value in pairs(self.__store) do
-        table.insert(keyPairs, {key, value})
-    end
-
-    if direction == Enum.SortDirection.Ascending then
-        table.sort(keyPairs, sortPairsAscending)
-    elseif direction == Enum.SortDirection.Descending then
-        table.sort(keyPairs, sortPairsDescending)
-    end
+    error("Not yet implemented", 2)
 end
 
 return MockMemoryStoreSortedMap

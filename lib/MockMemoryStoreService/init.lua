@@ -1,5 +1,8 @@
 local MockMemoryStoreSortedMap = require(script.MockMemoryStoreSortedMap)
 local MockMemoryStoreQueue = require(script.MockMemoryStoreQueue)
+local MockMemoryStoreQuota = require(script.MockMemoryStoreQuota)
+
+local RunService = game:GetService("RunService")
 
 local MockMemoryStoreService = {
     queues = {},
@@ -32,5 +35,22 @@ function MockMemoryStoreService:GetQueue(name: string, timeout: number)
 
     return queue
 end
+
+-- Lifetime handling
+local function onHeartbeat(deltaTime)
+    MockMemoryStoreQuota:UpdateQuota()
+
+    -- Need to handle expiration for each map value
+    for _, map in pairs(MockMemoryStoreService.sortedMaps) do
+        -- Iterate through each value to check if they're expired
+        -- Then expire them
+        for key, value in pairs(map.mapValues) do
+            if value.expiration <= tick() then
+                map:RemoveExpiringKey(key)
+            end
+        end
+    end
+end
+RunService.Heartbeat:Connect(onHeartbeat)
 
 return MockMemoryStoreService
