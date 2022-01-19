@@ -1,0 +1,17 @@
+{
+  "name": "@rbxts/mockmemorystoreservice",
+  "version": "1.0.0",
+  "description": "A wrapper for memory store service to allow testing locally",
+  "main": "lib/init.lua",
+  "scripts": {
+    "test": "rojo build tests.project.json --output tests.rbxl && run-in-roblox --place tests.rbxl --script ./scripts/tests.lua"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@rbxts/types": "^1.0.569"
+  },
+  "devDependencies": {
+    "@rbxts/testez": "^0.3.1-ts.7"
+  }
+}
