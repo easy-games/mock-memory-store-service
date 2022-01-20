@@ -3,33 +3,33 @@ on:
     branches: [master]
 
 jobs:
-  unit-tests:
-    name: Unit Tests
-    runs-on: windows-latest
-    timeout-minutes: 10
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2.3.4
+#   unit-tests:
+#     name: Unit Tests
+#     runs-on: windows-latest
+#     timeout-minutes: 10
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2.3.4
 
-      - name: Install Roblox Studio
-        uses: OrbitalOwen/roblox-win-installer-action@1.1
-        with:
-          cookie: ${{ secrets.RBX_TOKEN }}
-          token: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Install Roblox Studio
+#         uses: OrbitalOwen/roblox-win-installer-action@1.1
+#         with:
+#           cookie: ${{ secrets.RBX_TOKEN }}
+#           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install Foreman
-        uses: rojo-rbx/setup-foreman@v1.0.1
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+#       - name: Install Foreman
+#         uses: rojo-rbx/setup-foreman@v1.0.1
+#         with:
+#           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Install NPM dependencies
-        uses: bahmutov/npm-install@v1.7.4
+#       - name: Install NPM dependencies
+#         uses: bahmutov/npm-install@v1.7.4
 
-      - name: Compile and run tests
-        run: npm test
+#       - name: Compile and run tests
+#         run: npm test
   publish:
     name: Publish to NPM
-    needs: unit-tests
+#     needs: unit-tests
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
