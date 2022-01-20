@@ -62,6 +62,10 @@ function MockMemoryStoreSortedMap:RemoveAsync(key)
     self.mapValues[key] = nil
 end
 
+function MockMemoryStoreSortedMap:RemoveExpiringKey(key)
+    self.mapValues[key] = nil
+end
+
 function MockMemoryStoreSortedMap:GetRangeAsync(direction, count, exclusiveLowerBound, exclusiveUpperBound)
     error("Not yet implemented", 2)
 end
