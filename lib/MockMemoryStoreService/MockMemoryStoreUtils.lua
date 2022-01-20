@@ -10,6 +10,18 @@ function MockMemoryStoreUtils.AssertKeyIsValid(key: string)
     end
 end
 
+local onceUsedLocations = {}
+function MockMemoryStoreUtils.WarnOnce(message: string)
+    local trace = debug.traceback()
+
+    if onceUsedLocations[trace] then
+        return
+    end
+
+    onceUsedLocations[trace] = true;
+    warn(message)
+end
+
 MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS = 2_592_000
 
 return MockMemoryStoreUtils

@@ -1,6 +1,7 @@
 local MockMemoryStoreSortedMap = require(script.MockMemoryStoreSortedMap)
 local MockMemoryStoreQueue = require(script.MockMemoryStoreQueue)
 local MockMemoryStoreQuota = require(script.MockMemoryStoreQuota)
+local MockMemoryStoreUtils = require(script.MockMemoryStoreUtils)
 
 local RunService = game:GetService("RunService")
 
@@ -27,7 +28,7 @@ end
     Will retrieve a MockMemoryStoreQueue object under the specified name
 ]]
 function MockMemoryStoreService:GetQueue(name: string, timeout: number?)
-    warn("MockMemoryStoreService queue is still in development, and may not work accurately just yet.")
+    MockMemoryStoreUtils.WarnOnce("MockMemoryStoreService queue is still in development, and may not work accurately just yet.")
 
     local queue = self.queues[name]
     if queue == nil then

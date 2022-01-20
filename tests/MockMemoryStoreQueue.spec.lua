@@ -47,6 +47,24 @@ return function ()
         expect(#values2).to.equal(1)
     end)
 
+    it("Should handle priorities correctly", function()
+        local TestQueue = MockMemoryStoreService:GetQueue("TestPriorityQueue", 5)
+        -- Queue priority default is 3, higher = front
+        -- So order should be Three, Four, Two, One (Last two are based on order of insertion because they share priority)
+        TestQueue:AddAsync("One", 60)
+        TestQueue:AddAsync("Two", 60)
+        TestQueue:AddAsync("Three", 60, 5)
+        TestQueue:AddAsync("Four", 60, 4)
+
+        local results, id = TestQueue:ReadAsync(4, true)
+        expect(results[1]).to.equal("Three")
+        expect(results[2]).to.equal("Four")
+        expect(results[3]).to.equal("Two")
+        expect(results[4]).to.equal("One")
+
+        TestQueue:RemoveAsync(id)
+    end)
+
     it("Should remove expired items correctly", function()
         local TestQueue = MockMemoryStoreService:GetQueue("TestExpirationQueue", 0)
         TestQueue:AddAsync("Queue Value", 2)
@@ -67,7 +85,7 @@ return function ()
 
         TestQueue:RemoveAsync(id)
         task.wait(5)
-        
+
         local results2 = TestQueue:ReadAsync(1)
         expect(#results2).to.equal(0)
     end)

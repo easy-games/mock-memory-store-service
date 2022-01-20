@@ -63,7 +63,6 @@ function MockMemoryStoreQueue:HandleTimeouts()
     -- Remove expired values in queue
     for index, value in ipairs(self.queue) do
         if value.expiration < tick() then
-            print("pop")
             table.remove(self.queue, index)
         end
     end
