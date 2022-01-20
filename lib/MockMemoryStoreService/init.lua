@@ -1,6 +1,7 @@
 local MockMemoryStoreSortedMap = require(script.MockMemoryStoreSortedMap)
 local MockMemoryStoreQueue = require(script.MockMemoryStoreQueue)
 local MockMemoryStoreQuota = require(script.MockMemoryStoreQuota)
+local MockMemoryStoreUtils = require(script.MockMemoryStoreUtils)
 
 local RunService = game:GetService("RunService")
 
@@ -26,8 +27,8 @@ end
 --[[
     Will retrieve a MockMemoryStoreQueue object under the specified name
 ]]
-function MockMemoryStoreService:GetQueue(name: string, timeout: number)
-    warn("MockMemoryStoreService queue is still in development, and may not work accurately just yet.")
+function MockMemoryStoreService:GetQueue(name: string, timeout: number?)
+    MockMemoryStoreUtils.WarnOnce("MockMemoryStoreService queue is still in development, and may not work accurately just yet.")
 
     local queue = self.queues[name]
     if queue == nil then
@@ -51,6 +52,10 @@ local function onHeartbeat(deltaTime)
                 map:RemoveExpiringKey(key)
             end
         end
+    end
+
+    for _, queue in pairs(MockMemoryStoreService.queues) do
+        queue:HandleTimeouts()
     end
 end
 RunService.Heartbeat:Connect(onHeartbeat)

@@ -1,7 +1,6 @@
 local MockMemoryStoreService = require(game:GetService("ReplicatedStorage").MockMemoryStore)
 
 
-
 return function ()
     it("Should retrieve the same map", function()
         local TestSortedMap = MockMemoryStoreService:GetSortedMap("TestSortedMap")
