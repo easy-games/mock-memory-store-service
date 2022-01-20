@@ -8,3 +8,6 @@ local results = TestEZ.TestBootstrap:run({
 if (#results.errors > 0 or results.failureCount > 0) then
     error("Tests failed!")
 end
+
+
+task.wait(30)

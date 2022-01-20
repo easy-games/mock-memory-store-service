@@ -17,7 +17,7 @@ end
 -- Return the mock or actual service depending on environment:
 if shouldUseMock then
 	warn("INFO: Using MockMemoryStoreService instead of MemoryStoreService")
-	return require(MockMemoryStoreServiceModule)
+	return require(MockMemoryStoreServiceModule) :: MemoryStoreService
 else
-	return game:GetService("MemoryStoreService")
+	return game:GetService("MemoryStoreService") :: MemoryStoreService
 end

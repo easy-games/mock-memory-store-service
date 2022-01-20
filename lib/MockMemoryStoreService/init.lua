@@ -26,7 +26,7 @@ end
 --[[
     Will retrieve a MockMemoryStoreQueue object under the specified name
 ]]
-function MockMemoryStoreService:GetQueue(name: string, timeout: number)
+function MockMemoryStoreService:GetQueue(name: string, timeout: number?)
     warn("MockMemoryStoreService queue is still in development, and may not work accurately just yet.")
 
     local queue = self.queues[name]
@@ -51,6 +51,10 @@ local function onHeartbeat(deltaTime)
                 map:RemoveExpiringKey(key)
             end
         end
+    end
+
+    for _, queue in pairs(MockMemoryStoreService.queues) do
+        queue:HandleTimeouts()
     end
 end
 RunService.Heartbeat:Connect(onHeartbeat)
