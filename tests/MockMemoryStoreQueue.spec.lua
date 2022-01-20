@@ -40,15 +40,35 @@ return function ()
         -- This value shouldn't be retrievable.
         local values2 = TestQueue:ReadAsync(1, false)
         expect(#values2).to.equal(0)
+
+        task.wait(2)
+        -- It should be available again
+        local values2 = TestQueue:ReadAsync(1, false)
+        expect(#values2).to.equal(1)
     end)
 
     it("Should remove expired items correctly", function()
-        local TestQueue = MockMemoryStoreService:GetQueue("TestQueueInvisTimeout", 0)
+        local TestQueue = MockMemoryStoreService:GetQueue("TestExpirationQueue", 0)
         TestQueue:AddAsync("Queue Value", 2)
         task.wait(2)
         
         -- The item should've been removed after 2 seconds, so nmo items in the queue.
         local result = TestQueue:ReadAsync(1, false, 0)
         expect(#result).to.equal(0)
+    end)
+
+    it("Should handle removing items correctly", function()
+        local TestQueue = MockMemoryStoreService:GetQueue("TestRemovalQueue", 5)
+        TestQueue:AddAsync("One", 60)
+        TestQueue:AddAsync("Two", 30)
+
+        local results, id = TestQueue:ReadAsync(2, true, 10)
+        expect(#results).to.equal(2)
+
+        TestQueue:RemoveAsync(id)
+        task.wait(5)
+        
+        local results2 = TestQueue:ReadAsync(1)
+        expect(#results2).to.equal(0)
     end)
 end

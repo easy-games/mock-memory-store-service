@@ -39,7 +39,7 @@ function MockMemoryStoreQueue:ReadAsync(count: number, allOrNothing: boolean?, w
     repeat
         print("yield", time);
         time += task.wait()
-    until (waitTimeout == -1 or time >= waitTimeout) and (not allOrNothing or #self.queue >= count)
+    until (waitTimeout ~= -1 and time >= waitTimeout) or (not allOrNothing or #self.queue >= count)
 
     local queueCount = #self.queue
 
@@ -63,6 +63,7 @@ function MockMemoryStoreQueue:HandleTimeouts()
     -- Remove expired values in queue
     for index, value in ipairs(self.queue) do
         if value.expiration < tick() then
+            print("pop")
             table.remove(self.queue, index)
         end
     end
@@ -83,10 +84,7 @@ function MockMemoryStoreQueue:RemoveAsync(ref: string)
 
     local valueRef = self.refs[ref]
     if valueRef then
-        for _, value in ipairs(valueRef) do
-            local index = table.find(self.queue, value)
-            table.remove(self.queue, index)
-        end
+        self.refs[ref] = nil
     end
 end
 
@@ -99,14 +97,14 @@ function MockMemoryStoreQueue:AddAsyncInternal(value: Value)
     end)
 end
 
-function MockMemoryStoreQueue:AddAsync(value: any, expiration: number, priority: number?)
-    assert(typeof(expiration) == "number", "Expected 'expiration' (number) at argument #2")
+function MockMemoryStoreQueue:AddAsync(value: any, expirationSeconds: number, priority: number?)
+    assert(typeof(expirationSeconds) == "number", "Expected 'expirationSeconds' (number) at argument #2")
 
     MockMemoryStoreQuota:ProcessWriteRequest()
     self:AddAsyncInternal({
         value = value,
-        expiration = expiration,
-        priority = priority
+        expiration = tick() + expirationSeconds,
+        priority = priority or 3
     })
 end
 
