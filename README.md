@@ -4,6 +4,14 @@
 This is a set of modules, similar to [MockDataStoreService](https://github.com/buildthomas/MockDataStoreService) by buildthomas. This emulates the memory store service rather than using the actual service. This allows for testing it in offline places/local place files with code or frameworks that require the use of MemoryStoreService.
 
 ## Installation
+
+### Typescript via NPM
 ```
 npm i @rbxts/mock-memory-store-service
+```
+
+### Luau via Wally
+```toml
+# wally
+MockMemoryStoreService = "vorlias/mock-memory-store-service@0.2.0"
 ```
