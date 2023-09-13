@@ -33,7 +33,7 @@ function MockMemoryStoreHashMap:GetAsync(key: string): ItemData?
     MockMemoryStoreUtils.AssertKeyIsValid(key)
     MockMemoryStoreQuota:ProcessReadRequest()
 
-    local value = self.mapValues[key]
+    local value = self._MapValues[key]
     if value then
         return value.innerValue
     else
@@ -41,7 +41,7 @@ function MockMemoryStoreHashMap:GetAsync(key: string): ItemData?
     end
 end
 
-function MockMemoryStoreHashMap:SetAsync(key: string, value, expiration)
+function MockMemoryStoreHashMap:SetAsync(key: string, value: any?, expiration: number?): boolean
     MockMemoryStoreUtils.AssertKeyIsValid(key)
     assert(expiration, "Expiration required")
 
@@ -54,13 +54,13 @@ function MockMemoryStoreHashMap:SetAsync(key: string, value, expiration)
     }
 
     MockMemoryStoreQuota:ProcessWriteRequest()
-    local isExistingItem = self.mapValues[key] ~= nil
-    self.mapValues[key] = mapValue
+    local isExistingItem = self._MapValues[key] ~= nil
+    self._MapValues[key] = mapValue
 
     return isExistingItem
 end
 
-function MockMemoryStoreHashMap:UpdateAsync(key, transformFunction, expiration)
+function MockMemoryStoreHashMap:UpdateAsync(key: string, transformFunction: (any) -> any?, expiration: number?): any?
     assert(typeof(key) == "string", "Expects key (argument #1)")
     assert(typeof(transformFunction) == "function", "Expects transformFunction (argument #2)")
     assert(typeof(expiration) == "number", "Expects expiration (argument #3)")
@@ -76,14 +76,14 @@ function MockMemoryStoreHashMap:UpdateAsync(key, transformFunction, expiration)
     end
 end
 
-function MockMemoryStoreHashMap:RemoveAsync(key)
+function MockMemoryStoreHashMap:RemoveAsync(key: string)
     MockMemoryStoreQuota:ProcessWriteRequest()
 
-    self.mapValues[key] = nil
+    self._MapValues[key] = nil
 end
 
-function MockMemoryStoreHashMap:_RemoveExpiringKey(key)
-    self.mapValues[key] = nil
+function MockMemoryStoreHashMap:_RemoveExpiringKey(key: string)
+    self._MapValues[key] = nil
 end
 
 return MockMemoryStoreHashMap
