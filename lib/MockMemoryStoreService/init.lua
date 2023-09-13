@@ -1,4 +1,5 @@
 local MockMemoryStoreSortedMap = require(script.MockMemoryStoreSortedMap)
+local MockMemoryStoreHashMap = require(script.MockMemoryStoreHashMap)
 local MockMemoryStoreQueue = require(script.MockMemoryStoreQueue)
 local MockMemoryStoreQuota = require(script.MockMemoryStoreQuota)
 local MockMemoryStoreUtils = require(script.MockMemoryStoreUtils)
@@ -7,7 +8,8 @@ local RunService = game:GetService("RunService")
 
 local MockMemoryStoreService = {
     queues = {},
-    sortedMaps = {}
+    sortedMaps = {},
+    hashMaps = {},
 }
 MockMemoryStoreService.__index = MockMemoryStoreService
 
@@ -23,6 +25,20 @@ function MockMemoryStoreService:GetSortedMap(name: string)
 
     return sortedMap
 end
+
+
+--[[
+    Will retrieve a MockMemoryStoreHashMap object under the specified name
+]]
+function MockMemoryStoreService:GetHashMap(name: string)
+	local hashMap = self.hashMaps[name];
+	if hashMap == nil then
+		hashMap = MockMemoryStoreHashMap.new(name)
+	    self.hashMaps[name] = hashMap
+	end
+ 
+	return hashMap
+ end
 
 --[[
     Will retrieve a MockMemoryStoreQueue object under the specified name

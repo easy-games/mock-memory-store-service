@@ -12,7 +12,7 @@ type Value = {
     expiration: number,
 }
 
-function MockMemoryStoreQueue.new(name: string, timeout: number)
+function MockMemoryStoreQueue.new(name: string, timeout: number?)
     return setmetatable({
         queue = {},
         refs = {},
