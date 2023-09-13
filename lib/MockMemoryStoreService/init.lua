@@ -24,6 +24,20 @@ function MockMemoryStoreService:GetSortedMap(name: string)
     return sortedMap
 end
 
+
+--[[
+    Will retrieve a MockMemoryStoreHashMap object under the specified name
+]]
+function MockMemoryStoreService:GetHashMap(name: string)
+	local sortedMap = self.sortedMaps[name];
+	if sortedMap == nil then
+	    sortedMap = MockMemoryStoreSortedMap.new(name)
+	    self.sortedMaps[name] = sortedMap
+	end
+ 
+	return sortedMap
+ end
+
 --[[
     Will retrieve a MockMemoryStoreQueue object under the specified name
 ]]
