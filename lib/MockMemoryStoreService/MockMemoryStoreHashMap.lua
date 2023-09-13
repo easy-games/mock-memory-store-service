@@ -1,16 +1,35 @@
+--!strict
 local MockMemoryStoreQuota = require(script.Parent.MockMemoryStoreQuota)
 local MockMemoryStoreUtils = require(script.Parent.MockMemoryStoreUtils)
 
-local MockMemoryStoreHashMap = {}
+export type ItemData = {
+	innerValue: any,
+	key: string,
+	expiration: number,
+}
+
+export type MockMemoryStoreHashMap = {
+	__index: MockMemoryStoreHashMap,
+	_MapValues: {[string]: ItemData},
+	new: (name: string) -> (),
+	GetAsync: (self: MockMemoryStoreHashMap, key: string) -> ItemData?,
+	SetAsync: (self: MockMemoryStoreHashMap, key: string, value: any?, expiration: number?) -> boolean,
+	UpdateAsync: (self: MockMemoryStoreHashMap, key: string, transformFunction: (v: any) -> any?, expiration: number?) -> any?,
+	RemoveAsync: (self: MockMemoryStoreHashMap, key: string) -> (),
+	_RemoveExpiringKey: (self: MockMemoryStoreHashMap, key: string) -> (),
+}
+
+
+local MockMemoryStoreHashMap = {} :: MockMemoryStoreHashMap
 MockMemoryStoreHashMap.__index = MockMemoryStoreHashMap;
 
-function MockMemoryStoreHashMap.new(name)
-    return setmetatable({
-        mapValues = {},
-    }, MockMemoryStoreHashMap)
+function MockMemoryStoreHashMap.new(name: string): ()
+	local self: MockMemoryStoreHashMap = setmetatable({}, MockMemoryStoreHashMap) :: any
+	self._MapValues = {}
+	return self
 end
 
-function MockMemoryStoreHashMap:GetAsync(key)
+function MockMemoryStoreHashMap:GetAsync(key: string): ItemData?
     MockMemoryStoreUtils.AssertKeyIsValid(key)
     MockMemoryStoreQuota:ProcessReadRequest()
 
@@ -22,7 +41,7 @@ function MockMemoryStoreHashMap:GetAsync(key)
     end
 end
 
-function MockMemoryStoreHashMap:SetAsync(key, value, expiration)
+function MockMemoryStoreHashMap:SetAsync(key: string, value, expiration)
     MockMemoryStoreUtils.AssertKeyIsValid(key)
     assert(expiration, "Expiration required")
 
@@ -63,7 +82,7 @@ function MockMemoryStoreHashMap:RemoveAsync(key)
     self.mapValues[key] = nil
 end
 
-function MockMemoryStoreHashMap:RemoveExpiringKey(key)
+function MockMemoryStoreHashMap:_RemoveExpiringKey(key)
     self.mapValues[key] = nil
 end
 
