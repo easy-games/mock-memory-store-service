@@ -1,3 +1,4 @@
+
 local MockMemoryStoreQuota = {
     quota = 1000,
     lastQuotaCheckTime = 0
@@ -7,7 +8,7 @@ function MockMemoryStoreQuota:GetRequestBaseQuota()
     return 1000
 end
 
-function MockMemoryStoreQuota:GetRequestPlayerQuota(numPlayers)
+function MockMemoryStoreQuota:GetRequestPlayerQuota(numPlayers): number
     return 100 * (if numPlayers ~= nil then numPlayers else #game:GetService("Players"):GetPlayers())
 end
 
