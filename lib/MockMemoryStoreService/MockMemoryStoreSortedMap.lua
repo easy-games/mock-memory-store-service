@@ -24,9 +24,9 @@ local MockMemoryStoreSortedMap = {} :: MockMemoryStoreSortedMap
 MockMemoryStoreSortedMap.__index = MockMemoryStoreSortedMap;
 
 function MockMemoryStoreSortedMap.new(name: string)
-    return setmetatable({
-        mapValues = {},
-    }, MockMemoryStoreSortedMap)
+	local self: MockMemoryStoreSortedMap = setmetatable({}, MockMemoryStoreSortedMap) :: any
+	self._MapValues = {}
+	return self
 end
 
 function MockMemoryStoreSortedMap:GetAsync(key: string): ItemData?
