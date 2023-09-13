@@ -1,6 +1,11 @@
 local MockMemoryStoreQuota = require(script.Parent.MockMemoryStoreQuota)
 local MockMemoryStoreUtils = require(script.Parent.MockMemoryStoreUtils)
 
+type ItemData = {
+	innerValue: any,
+	expiration: number,
+}
+
 local MockMemoryStoreSortedMap = {}
 MockMemoryStoreSortedMap.__index = MockMemoryStoreSortedMap;
 
@@ -28,7 +33,7 @@ function MockMemoryStoreSortedMap:SetAsync(key, value, expiration)
 
     assert(expiration <= MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS, "Exceeds max expiration time")
 
-    local mapValue = {
+    local mapValue: ItemData = {
         innerValue = value,
         expiration = tick() + expiration
     }
@@ -66,8 +71,40 @@ function MockMemoryStoreSortedMap:RemoveExpiringKey(key)
     self.mapValues[key] = nil
 end
 
-function MockMemoryStoreSortedMap:GetRangeAsync(direction, count, exclusiveLowerBound, exclusiveUpperBound)
-    error("Not yet implemented", 2)
+function MockMemoryStoreSortedMap:GetRangeAsync(direction: Enum.SortDirection, count: number, exclusiveLowerBound: string?, exclusiveUpperBound: string?)
+	local keys: {[number]: string} = {}
+	for k, v in pairs(self.mapValues) do
+		table.insert(keys, k)
+	end
+
+	table.sort(keys, function(aKey: string, bKey: string): boolean
+		local a: ItemData = self.mapValues[aKey]
+		local b: ItemData = self.mapValues[bKey]
+		if direction == Enum.SortDirection.Ascending then
+			return a.innerValue < b.innerValue
+		else
+			return a.innerValue > b.innerValue
+		end
+	end)
+
+	local out: {[number]: ItemData} = {}
+	local isPastLowerBound = if exclusiveLowerBound == nil then true else false
+	for i, key in ipairs(keys) do
+		if key == exclusiveLowerBound then
+			isPastLowerBound = true
+		end
+		if #out >= count then
+			break
+		end
+		if isPastLowerBound then
+			table.insert(out, table.clone(self.mapValues[key]))
+		end
+		if key == exclusiveUpperBound then
+			break
+		end
+	end
+
+	return out
 end
 
 return MockMemoryStoreSortedMap
