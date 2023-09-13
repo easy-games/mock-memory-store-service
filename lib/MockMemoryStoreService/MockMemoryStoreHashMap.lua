@@ -30,6 +30,7 @@ function MockMemoryStoreHashMap:SetAsync(key, value, expiration)
 
     local mapValue = {
         innerValue = value,
+	   key = key,
         expiration = tick() + expiration
     }
 

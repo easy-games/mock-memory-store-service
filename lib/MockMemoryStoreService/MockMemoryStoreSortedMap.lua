@@ -35,6 +35,7 @@ function MockMemoryStoreSortedMap:SetAsync(key, value, expiration)
 
     local mapValue: ItemData = {
         innerValue = value,
+	   key = key,
         expiration = tick() + expiration
     }
 
