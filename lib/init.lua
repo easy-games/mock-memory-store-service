@@ -1,3 +1,4 @@
+--!strict
 local MockMemoryStoreServiceModule = script.MockMemoryStoreService
 
 local shouldUseMock = false

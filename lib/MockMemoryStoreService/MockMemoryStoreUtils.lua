@@ -1,8 +1,12 @@
+--!strict
 local MockMemoryStoreUtils = {}
 
-local MAX_KEY_LENGTH = 128
+local onceUsedLocations = {}
 
-function MockMemoryStoreUtils.AssertKeyIsValid(key: string)
+local MAX_KEY_LENGTH = 128
+MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS = 2_592_000
+
+function MockMemoryStoreUtils.assertKeyIsValid(key: string)
     assert(type(key) == "string", "Expects string got " .. typeof(key))
 
     if #key >= MAX_KEY_LENGTH then
@@ -10,8 +14,7 @@ function MockMemoryStoreUtils.AssertKeyIsValid(key: string)
     end
 end
 
-local onceUsedLocations = {}
-function MockMemoryStoreUtils.WarnOnce(message: string)
+function MockMemoryStoreUtils.warnOnce(message: string)
     local trace = debug.traceback()
 
     if onceUsedLocations[trace] then
@@ -21,7 +24,5 @@ function MockMemoryStoreUtils.WarnOnce(message: string)
     onceUsedLocations[trace] = true;
     warn(message)
 end
-
-MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS = 2_592_000
 
 return MockMemoryStoreUtils

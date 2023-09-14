@@ -3,7 +3,7 @@ name = "vorlias/mock-memory-store-service"
 description = "Emulation of Roblox's MemoryStoreService for offline development and testing"
 version = "0.2.0"
 license = "MIT"
-authors = ["Vorlias", "Easy Games"]
+authors = ["Vorlias", "Easy Games", "Nightcycle"]
 realm = "shared"
 registry = "https://github.com/upliftgames/wally-index"
 
