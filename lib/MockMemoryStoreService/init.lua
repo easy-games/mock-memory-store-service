@@ -77,7 +77,7 @@ function MockMemoryStoreService.new()
 		MockMemoryStoreQuota:UpdateQuota()
 	
 		-- Need to handle expiration for each map value
-		for _, map in pairs(MockMemoryStoreService._SortedMaps) do
+		for _, map in pairs(self._SortedMaps) do
 		-- Iterate through each value to check if they're expired
 		-- Then expire them
 		for key, value in pairs(map._MapValues) do
@@ -87,7 +87,7 @@ function MockMemoryStoreService.new()
 		end
 		end
 	
-		for _, queue in pairs(MockMemoryStoreService._Queues) do
+		for _, queue in pairs(self._Queues) do
 		queue:_HandleTimeouts()
 		end
 	end
