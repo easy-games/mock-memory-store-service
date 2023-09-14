@@ -30,7 +30,7 @@ function MockMemoryStoreSortedMap.new(name: string)
 end
 
 function MockMemoryStoreSortedMap:GetAsync(key: string): ItemData?
-    MockMemoryStoreUtils.AssertKeyIsValid(key)
+    MockMemoryStoreUtils.assertKeyIsValid(key)
     MockMemoryStoreQuota:ProcessReadRequest()
 
     local value = self._MapValues[key]
@@ -42,7 +42,7 @@ function MockMemoryStoreSortedMap:GetAsync(key: string): ItemData?
 end
 
 function MockMemoryStoreSortedMap:SetAsync(key: string, value: any?, expiration: number?): boolean
-    MockMemoryStoreUtils.AssertKeyIsValid(key)
+    MockMemoryStoreUtils.assertKeyIsValid(key)
     assert(expiration, "Expiration required")
 
     assert(expiration <= MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS, "Exceeds max expiration time")
