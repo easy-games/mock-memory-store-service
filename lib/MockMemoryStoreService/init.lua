@@ -1,4 +1,5 @@
 local MockMemoryStoreSortedMap = require(script.MockMemoryStoreSortedMap)
+local MockMemoryStoreHashMap = require(script.MockMemoryStoreHashMap)
 local MockMemoryStoreQueue = require(script.MockMemoryStoreQueue)
 local MockMemoryStoreQuota = require(script.MockMemoryStoreQuota)
 local MockMemoryStoreUtils = require(script.MockMemoryStoreUtils)
@@ -8,6 +9,7 @@ local RunService = game:GetService("RunService")
 local MockMemoryStoreService = {
     queues = {},
     sortedMaps = {}
+    hashMaps = {}
 }
 MockMemoryStoreService.__index = MockMemoryStoreService
 
@@ -39,12 +41,36 @@ function MockMemoryStoreService:GetQueue(name: string, timeout: number?)
     return queue
 end
 
+--[[
+    Will retrieve a MockMemoryStoreHashMap object under the specified name
+]]
+function MockMemoryStoreService:GetHashMap(name: string, timeout: number?)
+    local hashMap = self.hashMaps[name];
+    if hashMap == nil then
+        hashMap = MockMemoryStoreHashMap.new(name, timeout)
+        self.hashMaps[name] = hashMap
+    end
+
+    return hashMap
+end
+
 -- Lifetime handling
 local function onHeartbeat(deltaTime)
     MockMemoryStoreQuota:UpdateQuota()
 
     -- Need to handle expiration for each map value
     for _, map in pairs(MockMemoryStoreService.sortedMaps) do
+        -- Iterate through each value to check if they're expired
+        -- Then expire them
+        for key, value in pairs(map.mapValues) do
+            if value.expiration <= tick() then
+                map:RemoveExpiringKey(key)
+            end
+        end
+    end
+
+    -- Handle expirations for hashmaps as well
+    for _, map in pairs(MockMemoryStoreService.hashMaps) do
         -- Iterate through each value to check if they're expired
         -- Then expire them
         for key, value in pairs(map.mapValues) do

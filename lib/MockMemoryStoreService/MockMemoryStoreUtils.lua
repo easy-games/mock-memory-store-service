@@ -22,6 +22,7 @@ function MockMemoryStoreUtils.WarnOnce(message: string)
     warn(message)
 end
 
-MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS = 2_592_000
+-- 45 days
+MockMemoryStoreUtils.MAX_EXPIRATION_SECONDS = 3_888_000
 
 return MockMemoryStoreUtils
